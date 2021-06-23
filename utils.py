@@ -138,21 +138,21 @@ def bbox_overlaps_ciou(bboxes1, bboxes2):
     area1 = w1 * h1
     area2 = w2 * h2
 
-    center_x1 = (bboxes1[:, 2] + bboxes1[:, 0]) / 2
-    center_y1 = (bboxes1[:, 3] + bboxes1[:, 1]) / 2
-    center_x2 = (bboxes2[:, 2] + bboxes2[:, 0]) / 2
-    center_y2 = (bboxes2[:, 3] + bboxes2[:, 1]) / 2
+    center_x1 = (bboxes1[..., 2] + bboxes1[..., 0]) / 2
+    center_y1 = (bboxes1[..., 3] + bboxes1[..., 1]) / 2
+    center_x2 = (bboxes2[..., 2] + bboxes2[..., 0]) / 2
+    center_y2 = (bboxes2[..., 3] + bboxes2[..., 1]) / 2
 
-    inter_max_xy = torch.min(bboxes1[:, 2:],bboxes2[:, 2:])
-    inter_min_xy = torch.max(bboxes1[:, :2],bboxes2[:, :2])
-    out_max_xy = torch.max(bboxes1[:, 2:],bboxes2[:, 2:])
-    out_min_xy = torch.min(bboxes1[:, :2],bboxes2[:, :2])
+    inter_max_xy = torch.min(bboxes1[..., 2:],bboxes2[..., 2:])
+    inter_min_xy = torch.max(bboxes1[..., :2],bboxes2[..., :2])
+    out_max_xy = torch.max(bboxes1[..., 2:],bboxes2[..., 2:])
+    out_min_xy = torch.min(bboxes1[..., :2],bboxes2[..., :2])
 
     inter = torch.clamp((inter_max_xy - inter_min_xy), min=0)
-    inter_area = inter[:, 0] * inter[:, 1]
+    inter_area = inter[..., 0] * inter[..., 1]
     inter_diag = (center_x2 - center_x1)**2 + (center_y2 - center_y1)**2
     outer = torch.clamp((out_max_xy - out_min_xy), min=0)
-    outer_diag = (outer[:, 0] ** 2) + (outer[:, 1] ** 2)
+    outer_diag = (outer[..., 0] ** 2) + (outer[..., 1] ** 2)
     union = area1+area2-inter_area
     u = (inter_diag) / outer_diag
     iou = inter_area / union
